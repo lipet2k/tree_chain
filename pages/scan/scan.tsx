@@ -1,10 +1,12 @@
 import Webcam from 'react-webcam';
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import Layout from '@/components/Layout';
-import { ReactElement } from 'react';
+import { ReactElement, useEffect, useContext } from 'react';
 import Image from 'next/image';
-import OpenAI from 'openai';
 import getConfig from 'next/config';
+import { ConnexContext } from '../_app';
+
+const { publicRuntimeConfig } = getConfig();
 
 const imageContraints = {
     width: 1280,
@@ -13,28 +15,102 @@ const imageContraints = {
 };
 
 export async function getServerSideProps() {
-    const serverRuntimeConfig = getConfig();
-    const openai = new OpenAI(serverRuntimeConfig.OPENAI_API_KEY);
-    const response = await openai.images.generate(
-        {
-            prompt: "This is a photo of a dog",
-            n: 1,
-            size: "1024x1024"
-        }
-    )
-    
+    const requestOptions = {
+        method: 'POST',
+    };
+    const data = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + publicRuntimeConfig.GOOGLE_API_KEY, requestOptions);
+    const json = await data.json();
+    return {
+        props: {
+            location: json.location,
+        },
+    };
 }
 
-export default function Scan() {
+export default function Scan({ location }: { location: { lat: number, lng: number } }) {
+    const { thor, vendor } = useContext(ConnexContext);
+
     const webcamRef = React.useRef<Webcam>(null);
     const [imgSrc, setImgSrc] = React.useState<string | null | undefined>(null);
-    const capture = React.useCallback(
-        () => {
-            const imageSrc = webcamRef.current?.getScreenshot();
-            setImgSrc(imageSrc);
-        },
-        [webcamRef, setImgSrc]
-    );
+    const [finalImageUrl, setFinalImageUrl] = useState<string | null | undefined>(null);
+    const [tokenId, setTokenId] = useState<string | null | undefined>(null);
+
+    async function mintNFT(url: string) {
+        const { publicRuntimeConfig } = getConfig();
+        const addressContract = publicRuntimeConfig.CONTRACT_ADDRESS;
+        const mint_abi = {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "tokenURI",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "location",
+                    "type": "string"
+                }
+            ],
+            "name": "mintNFT",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        };
+        try {
+            const mintNFTMethod = thor.account(addressContract).method(mint_abi);
+            console.log(JSON.stringify(location));
+            console.log(url)
+            const transferClause = mintNFTMethod.asClause(url, JSON.stringify(location));
+            const tokenId = await vendor.sign('tx', [{
+                to: addressContract,
+                value: 0,
+                data: transferClause.data,
+            }]).request()
+            setTokenId(tokenId.decoded[0]);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function uploadImage(dataUrl: string | null | undefined) {
+
+        try {
+            const imageBytes = (dataUrl as string).split(",")[1];
+            const requestOptions = {
+                method: 'POST',
+                body: JSON.stringify({ imageBytes: imageBytes }),
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                }),
+            };
+            const data = await fetch('/api/stable_diffusion', requestOptions);
+            const json = await data.json();
+            return json.stable_diffusion_url;
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function capture() {
+        const imageSrc = webcamRef.current?.getScreenshot();
+        setImgSrc(imageSrc);
+        await uploadImage(imageSrc).then(async (url) => {
+            setFinalImageUrl(url);
+            await mintNFT(url);
+        });
+    };
+
+    useEffect(() => {
+
+    }, [finalImageUrl])
+
     return (
         <div className='flex flex-col items-center min-h-screen background-patterned'>
             <div className="mt-[8rem] w-max flex flex-col items-center space-y-2 lg:space-y-8 border p-2 rounded-xl border-4 border-[#806D40] bg-white">
@@ -50,25 +126,31 @@ export default function Scan() {
                 <button className="bg-lime-800 text-white w-[6rem] h-[3rem] rounded-lg hover:underline hover:bg-[#A1BA89] hover:text-black border-black border-2" onClick={capture}>Scan</button>
             </div>
             {imgSrc && (
-                <div className="flex flex-col items-center justify-center mt-20 bg-white rounded-lg p-4 w-[21rem] lg:w-[50rem] items-center justify-center border border-4 border-[#806D40]">
+                <div className="flex flex-col items-center justify-center mt-20 bg-white rounded-lg p-4 w-[21rem] lg:w-[50rem] items-center justify-center border border-4 border-[#806D40] mb-20">
                     <h1 className="text-3xl mb-8">Minting...</h1>
-                <div className="flex space-x-8 ">
-                    
-                    <Image
-                        src={imgSrc}
-                        alt="Picture of the author"
-                        width={500}
-                        height={500}
-                        className="w-[8rem] h-[7rem] lg:w-[20rem] lg:h-[13rem] rounded-md"
-                    />
-                                        <Image
-                        src={imgSrc}
-                        alt="Picture of the author"
-                        width={500}
-                        height={500}
-                        className="w-[8rem] h-[7rem] lg:w-[20rem] lg:h-[13rem] rounded-md"
-                    />
-                </div>
+                    <div className="flex space-x-8 ">
+
+                        <Image
+                            src={imgSrc}
+                            alt="Picture of the leaf"
+                            width={500}
+                            height={500}
+                            className="w-[8rem] h-[8rem] lg:w-[20rem] lg:h-[13rem] rounded-md"
+                        />
+                        {finalImageUrl ? (<Image
+                            src={finalImageUrl}
+                            alt="Picture of the leaf"
+                            width={500}
+                            height={500}
+                            className="w-[8rem] h-[8rem] lg:w-[20rem] lg:h-[13rem] rounded-md"
+                        />) : (<Image
+                            src='/images/loading.gif'
+                            alt="Loading picture"
+                            width={500}
+                            height={500}
+                            className="w-[8rem] h-[8rem] lg:w-[20rem] lg:h-[13rem] rounded-md animate-pulse"
+                        />)}
+                    </div>
                 </div>
             )}
         </div>
