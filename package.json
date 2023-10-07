@@ -16,6 +16,7 @@
     "@vechain/web3-providers-connex": "^1.1.2",
     "google-map-react": "^2.2.1",
     "next": "latest",
+    "openai": "^4.11.1",
     "react": "latest",
     "react-dom": "latest",
     "react-webcam": "^7.1.1"
