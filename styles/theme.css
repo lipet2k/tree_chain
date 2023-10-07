@@ -1,0 +1,32 @@
+.cambridge-blue {
+    background-color: #92BDA3;
+}
+
+.olivine {
+    background-color: #A1BA89;
+}
+
+.pistachio {
+    background-color: #A5CC6B;
+}
+
+.coyote {
+    background-color: #806D40;
+}
+
+* {
+    font-family: 'Monaco', monospace;
+}
+
+.background-patterned {
+    background-color: #bacdae;
+    background-image: radial-gradient(#806D40 1.05px, transparent 1.05px), radial-gradient(#806D40 1.05px, #bacdae 1.05px);
+    background-size: 42px 42px;
+    background-position: 0 0, 21px 21px;
+}
+
+.background-striped {
+    background-color: white;
+    background-size: 21px 21px;
+    background-image: repeating-linear-gradient(45deg, #806D40 0, #806D40 2.1px, #bacdae 0, #bacdae 50%);
+}
