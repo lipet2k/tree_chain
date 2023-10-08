@@ -1,6 +1,6 @@
 // @ts-nocheck
 import GoogleMapReact from 'google-map-react';
-import React, { ReactElement, useEffect, useContext } from 'react';
+import React, { ReactElement, useEffect, useContext, useState } from 'react';
 import Layout from '@/components/Layout';
 import Verify from '@/components/Verify';
 import Marker from '@/components/Marker';
@@ -9,22 +9,11 @@ import { ConnexContext } from '../_app';
 
 const { publicRuntimeConfig } = getConfig();
 
-export async function getServerSideProps() {
-    const requestOptions = {
-        method: 'POST',
-    };
-    const data = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + publicRuntimeConfig.GOOGLE_API_KEY, requestOptions);
-    const json = await data.json();
-    return {
-        props: {
-            location: json.location,
-        },
-    };
-}
+export default function Explore() {
 
-export default function Explore({ location }: { location: { lat: number, lng: number } }) {
+    const [location, setLocation] = useState<{ lat: number, lng: number }>({ lat: 42.3744695, lng: -71.1311465 });
 
-    const {thor, vendor} = useContext(ConnexContext);
+    const { thor, vendor } = useContext(ConnexContext);
 
     const [markers, setMarkers] = React.useState<any[]>([]);
 
@@ -63,9 +52,19 @@ export default function Explore({ location }: { location: { lat: number, lng: nu
     }
 
     useEffect(() => {
+        const initLocation = async () => {
+            const requestOptions = {
+                method: 'POST',
+            };
+            const data = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + publicRuntimeConfig.GOOGLE_API_KEY, requestOptions);
+            const json = await data.json();
+            setLocation(json.location);
+        };
+
         const initMarkers = async () => {
             await getMarkers();
         }
+        initLocation();
         initMarkers();
     }, [markers]);
 

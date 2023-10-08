@@ -1,6 +1,6 @@
 ## TreeChain: VeChain + BCG + EasyA Hackathon at Harvard
 
-See the application at [treechain.xyz](treechain.xyz)
+See the application at [https://treechain.xyz](https://treechain.xyz)
 
 TreeChain is a project that involves people to get connected with nature. Users can explore and capture different species of plants and vegetation. After scanning and verifying the species, a special AI generated NFT is added to their collection.
 

@@ -2,7 +2,7 @@
 const nextConfig = {
 
   images: {
-    domains: ['cdn2.stablediffusionapi.com']
+    domains: ['cdn2.stablediffusionapi.com', 'pub-3626123a908346a7a8be8d9295f44e26.r2.dev']
   },
 
   // Will only be available on the server side
