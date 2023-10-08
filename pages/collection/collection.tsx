@@ -59,15 +59,17 @@ export default function Collection() {
         initCollection();
     }, [collection]);
 
-    return (<div className="flex flex-col items-center min-h-screen background-patterned">
+    return (<div className="flex flex-col items-center min-h-screen background-patterned grid justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
         {collection && collection.map((item: any) => {
             return (
-                <div className="flex flex-col bg-white rounded p-2 items-center space-y-4 mt-10 border-4 border-[#806D40]">
+                <div className="flex flex-col bg-white rounded p-2 items-center space-y-4 mt-10 border-4 border-[#806D40] w-[23rem]">
                     <Image src={item.uri} width={50} height={50} alt="Image" className="lg:w-[20rem] lg:h-[10rem] w-[10rem] h-[10rem]" />
                     <h1 className="text-sm lg:text-md">{'Loc:' + `${item.location}`}</h1>
                     <h1 className="text-sm lg:text-md">{`Owner: ${item.owner.substring(0, 10)}...`}</h1>
                 </div>)
         })}
+        </div>
 
     </div >)
 }
