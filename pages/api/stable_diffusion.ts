@@ -14,13 +14,13 @@ async function getStableDiffusionImage(image_bb_url: string) {
   const raw = JSON.stringify({
     init_image: image_bb_url,
     key: serverRuntimeConfig.STABLE_DIFFUSION_API_KEY,
-    prompt: "An anime style cartoon NFT of the given image",
+    prompt: "An anime style NFT image of the given image",
     num_inference_steps: 30,
     guidance_scale: 7.5,
     samples: 1,
     width: 512,
     height: 512,
-    strength: 0.7,
+    strength: 0.5,
   });
 
   const requestOptions = {
