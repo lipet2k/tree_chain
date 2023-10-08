@@ -5,6 +5,7 @@ import { ReactElement, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import getConfig from 'next/config';
 import { ConnexContext } from '../_app';
+// import create_proof from '../../ezkl_js/create_proof';
 
 const { publicRuntimeConfig } = getConfig();
 

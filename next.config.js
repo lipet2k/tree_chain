@@ -15,6 +15,7 @@ const nextConfig = {
   publicRuntimeConfig: {
     GOOGLE_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
     CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+    ARTIFACT_ID: process.env.NEXT_PUBLIC_ARTIFACT_ID,
   }
 }
 

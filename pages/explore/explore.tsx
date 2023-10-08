@@ -1,10 +1,11 @@
-import React, { ReactElement } from 'react';
+// @ts-nocheck
+import GoogleMapReact from 'google-map-react';
+import React, { ReactElement, useEffect, useContext } from 'react';
 import Layout from '@/components/Layout';
 import Verify from '@/components/Verify';
+import Marker from '@/components/Marker';
 import getConfig from 'next/config';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import Image from 'next/image';
-import GoogleMapReact from 'google-map-react';
+import { ConnexContext } from '../_app';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -21,28 +22,73 @@ export async function getServerSideProps() {
     };
 }
 
-export default function Explore({location}: {location: {lat: number, lng: number}}) {
+export default function Explore({ location }: { location: { lat: number, lng: number } }) {
+
+    const {thor, vendor} = useContext(ConnexContext);
+
+    const [markers, setMarkers] = React.useState<any[]>([]);
+
     const defaultProps = {
         center: location,
-        zoom: 11,
+        zoom: 14,
+    };
+
+    async function getMarkers() {
+        const { publicRuntimeConfig } = getConfig();
+        const addressContract = publicRuntimeConfig.CONTRACT_ADDRESS;
+        const get_locations_abi = {
+            "inputs": [],
+            "name": "getLocations",
+            "outputs": [
+                {
+                    "internalType": "string[]",
+                    "name": "",
+                    "type": "string[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        };
+        try {
+            const getLocationsMethod = thor.account(addressContract).method(get_locations_abi)
+            const locations = await getLocationsMethod.call()
+            const lat_lngs_decoded = locations.decoded[0];
+            const lat_lngs = lat_lngs_decoded.map((lat_lng: string) => {
+                return JSON.parse(lat_lng);
+            });
+            setMarkers(lat_lngs);
+        } catch (e) {
+            console.log(e);
         }
-    
+    }
+
+    useEffect(() => {
+        const initMarkers = async () => {
+            await getMarkers();
+        }
+        initMarkers();
+    }, [markers]);
+
     return (
         <div className="flex flex-col items-center min-h-screen background-patterned">
             <div className="mt-[2rem] lg:mt-[4rem]">
                 <Verify />
             </div>
             <div className="lg:h-[40rem] w-[20rem] h-[30rem] lg:w-[35rem] mt-[2rem] border-2 border border-[#806D40] p-2 bg-white border-4 rounded-xl">
-            <GoogleMapReact
-                bootstrapURLKeys={{ key: publicRuntimeConfig.GOOGLE_API_KEY }}
-                defaultCenter={defaultProps.center}
-                defaultZoom={defaultProps.zoom}
-                yesIWantToUseGoogleMapApiInternals
-                onGoogleApiLoaded={({ map, maps }) => {
-                    // do stuff with map and maps objects
-                }}
-            >
-            </GoogleMapReact>
+                <GoogleMapReact
+                    bootstrapURLKeys={{ key: publicRuntimeConfig.GOOGLE_API_KEY }}
+                    defaultCenter={defaultProps.center}
+                    defaultZoom={defaultProps.zoom}
+                    yesIWantToUseGoogleMapApiInternals
+                >
+                    {markers.map((marker, index) => (
+                        <Marker
+                            key={index}
+                            lat={marker.lat}
+                            lng={marker.lng}
+                        />
+                    ))}
+                </GoogleMapReact>
             </div>
         </div>
     );
