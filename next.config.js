@@ -14,6 +14,7 @@ const nextConfig = {
 
   // Will be available on both server and client
   publicRuntimeConfig: {
+    VERIFIER_ADDRESS: process.env.NEXT_PUBLIC_VERIFIER_ADDRESS,
     GOOGLE_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
     CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
     ARTIFACT_ID: process.env.NEXT_PUBLIC_ARTIFACT_ID,

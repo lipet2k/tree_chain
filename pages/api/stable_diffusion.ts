@@ -3,7 +3,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import getConfig from 'next/config';
 
 type Data = {
-  stable_diffusion_url: string
+  stable_diffusion_url: string,
+  image_bb_url: string,
 }
 
 const { serverRuntimeConfig } = getConfig()
@@ -62,5 +63,5 @@ export default async function handler(
 
   const stable_diffusion_url: string = await getStableDiffusionImage(image_bb_url);
 
-  return res.status(200).json({ stable_diffusion_url: stable_diffusion_url })
+  return res.status(200).json({ stable_diffusion_url: stable_diffusion_url, image_bb_url: image_bb_url })
 }

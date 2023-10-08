@@ -15,32 +15,37 @@ export default function Collection() {
             "inputs": [],
             "name": "getCollection",
             "outputs": [
-                {
-                    "components": [
-                        {
-                            "internalType": "string",
-                            "name": "uri",
-                            "type": "string"
-                        },
-                        {
-                            "internalType": "string",
-                            "name": "location",
-                            "type": "string"
-                        },
-                        {
-                            "internalType": "address",
-                            "name": "owner",
-                            "type": "address"
-                        }
-                    ],
-                    "internalType": "struct MyNFT.Collection[]",
-                    "name": "",
-                    "type": "tuple[]"
-                }
+              {
+                "components": [
+                  {
+                    "internalType": "string",
+                    "name": "uri",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "location",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "classification",
+                    "type": "string"
+                  }
+                ],
+                "internalType": "struct MyNFT.Collection[]",
+                "name": "",
+                "type": "tuple[]"
+              }
             ],
             "stateMutability": "view",
             "type": "function"
-        };
+          };
         try {
             const getCollectionMethod = thor.account(addressContract).method(collection_abi)
             const collection = await getCollectionMethod.call()
@@ -67,6 +72,7 @@ export default function Collection() {
                     <Image src={item.uri} width={50} height={50} alt="Image" className="lg:w-[20rem] lg:h-[10rem] w-[10rem] h-[10rem]" />
                     <h1 className="text-sm lg:text-md">{'Loc:' + `${item.location}`}</h1>
                     <h1 className="text-sm lg:text-md">{`Owner: ${item.owner.substring(0, 10)}...`}</h1>
+                    <h1 className="text-sm lg-text-md">{`Class: ${item.classification}`}</h1>
                 </div>)
         })}
         </div>

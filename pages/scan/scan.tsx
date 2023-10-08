@@ -5,6 +5,7 @@ import { ReactElement, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import getConfig from 'next/config';
 import { ConnexContext } from '../_app';
+import { toast } from 'react-toastify';
 // import create_proof from '../../ezkl_js/create_proof';
 
 const { publicRuntimeConfig } = getConfig();
@@ -41,33 +42,55 @@ export default function Scan({ location }: { location: { lat: number, lng: numbe
         const addressContract = publicRuntimeConfig.CONTRACT_ADDRESS;
         const mint_abi = {
             "inputs": [
-                {
-                    "internalType": "string",
-                    "name": "tokenURI",
-                    "type": "string"
-                },
-                {
-                    "internalType": "string",
-                    "name": "location",
-                    "type": "string"
-                }
+              {
+                "internalType": "string",
+                "name": "tokenURI",
+                "type": "string"
+              },
+              {
+                "internalType": "string",
+                "name": "location",
+                "type": "string"
+              },
+              {
+                "internalType": "string",
+                "name": "classification",
+                "type": "string"
+              }
             ],
             "name": "mintNFT",
             "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
+              {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+              }
             ],
             "stateMutability": "nonpayable",
             "type": "function"
-        };
+          };
         try {
             const mintNFTMethod = thor.account(addressContract).method(mint_abi);
             console.log(JSON.stringify(location));
             console.log(url)
-            const transferClause = mintNFTMethod.asClause(url, JSON.stringify(location));
+            
+            const urlParams = new URLSearchParams({
+                url: url,
+            });
+            const data = await fetch("http://localhost:5000/classify?" + urlParams);
+            const json = await data.json();
+            toast.info(json.result, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: false,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+            });
+
+            const transferClause = mintNFTMethod.asClause(url, JSON.stringify(location), json.result);
             const tokenId = await vendor.sign('tx', [{
                 to: addressContract,
                 value: 0,

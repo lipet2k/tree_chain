@@ -1,9 +1,12 @@
 import torch
 import torch.nn as nn
+import requests
 import torchvision.transforms as transforms
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from PIL import Image
+
+from io import BytesIO
 from model import Model
 
 app = Flask(__name__)
@@ -15,13 +18,14 @@ model = Model(num_classes=10)
 model.load_state_dict(torch.load('./cifar100_cnn_model.pth'))  # Load your trained model
 model.eval()
 
-@app.route('/classify', methods=['POST'])
+@app.route('/classify')
 @cross_origin()
 def post_data():
-    if request.method == 'POST':
+    if request.method == 'GET':
         try:
-            image = request.files.get('image')
-            image = Image.open(image)
+            url = request.args.get('url')
+            response = requests.get(url)
+            image = Image.open(BytesIO(response.content))
             image = image.resize((32, 32), resample=Image.NEAREST)
 
             transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])

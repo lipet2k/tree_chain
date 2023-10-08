@@ -1,10 +1,10 @@
 const hre = require("hardhat");
 
 async function main() {
-    const verifier = await hre.ethers.deployContract("Verifier");
-    await verifier.waitForDeployment();
+    const verifier = await ethers.getContractFactory("Halo2Verifier");
 
-    console.log(`Verifier deployed to ${verifier.address}`);
+    const myVerifier = await verifier.deploy();
+    console.log("Contract deployed to address:", myVerifier.target);
 }
 
 main().catch((error) => {
