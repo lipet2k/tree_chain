@@ -9,6 +9,7 @@ contract MyNFT is ERC721URIStorage {
         string uri;
         string location;
         address owner;
+        string proof;
     }
 
     uint256 private _nextTokenId;
@@ -20,13 +21,14 @@ contract MyNFT is ERC721URIStorage {
 
     function mintNFT(
         string memory tokenURI,
-        string memory location
+        string memory location,
+        string memory proof
     ) public returns (uint256) {
         uint256 tokenId = _nextTokenId++;
 
         uint256 newItemId = tokenId;
         lat_long[newItemId] = location;
-        collections.push(Collection(tokenURI, location, msg.sender));
+        collections.push(Collection(tokenURI, location, msg.sender, proof));
         locations.push(location);
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
@@ -45,4 +47,5 @@ contract MyNFT is ERC721URIStorage {
     function getLocations() public view returns (string[] memory) {
         return locations;
     }
+
 }

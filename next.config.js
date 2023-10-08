@@ -9,6 +9,7 @@ const nextConfig = {
   serverRuntimeConfig: {
     STABLE_DIFFUSION_API_KEY: process.env.STABLE_DIFFUSION_API_KEY,
     IMG_BB_API_KEY: process.env.IMG_BB_API_KEY,
+    JSON_BIN_API_KEY: process.env.JSON_BIN_API_KEY,
   },
 
   // Will be available on both server and client
