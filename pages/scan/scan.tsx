@@ -16,14 +16,26 @@ const imageContraints = {
     facingMode: "environment"
 };
 
-export default function Scan() {
+export async function getServerSideProps() {
+    const requestOptions = {
+        method: 'POST',
+    };
+    const data = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + publicRuntimeConfig.GOOGLE_API_KEY, requestOptions);
+    const json = await data.json();
+    return {
+        props: {
+            location: json.location,
+        },
+    };
+}
+
+export default function Scan({ location }: { location: { lat: number, lng: number } }) {
     const { thor, vendor } = useContext(ConnexContext);
 
     const webcamRef = React.useRef<Webcam>(null);
     const [imgSrc, setImgSrc] = React.useState<string | null | undefined>(null);
     const [finalImageUrl, setFinalImageUrl] = useState<string | null | undefined>(null);
     const [tokenId, setTokenId] = useState<string | null | undefined>(null);
-    const [location, setLocation] = useState<{ lat: number, lng: number }>({ lat: 42.3744695, lng: -71.1311465 });
 
     async function mintNFT(url: string) {
         const { publicRuntimeConfig } = getConfig();
@@ -119,20 +131,6 @@ export default function Scan() {
             await mintNFT(url);
         });
     };
-
-    useEffect(() => {
-        const initLocation = async () => {
-            const requestOptions = {
-                method: 'POST',
-            };
-            const data = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + publicRuntimeConfig.GOOGLE_API_KEY, requestOptions);
-            const json = await data.json();
-            setLocation(json.location);
-        };
-        console.log(location);
-        initLocation();
-
-    }, [])
 
     return (
         <div className='flex flex-col items-center min-h-screen background-patterned'>
