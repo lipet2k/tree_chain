@@ -9,20 +9,23 @@ import { ConnexContext } from '../_app';
 
 const { publicRuntimeConfig } = getConfig();
 
-export async function getServerSideProps() {
-    const requestOptions = {
-        method: 'POST',
-    };
-    const data = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + publicRuntimeConfig.GOOGLE_API_KEY, requestOptions);
-    let json = await data.json();
-    return {
-        props: {
-            location: json.location,
-        },
-    };
-}
+// export async function getServerSideProps() {
+//     const requestOptions = {
+//         method: 'POST',
+//     };
+//     const data = await fetch('https://www.googleapis.com/geolocation/v1/geolocate?key=' + publicRuntimeConfig.GOOGLE_API_KEY, requestOptions);
+//     let json = await data.json();
+//     return {
+//         props: {
+//             location: json.location,
+//         },
+//     };
+// }
 
-export default function Explore({ location }: { location: { lat: number, lng: number } }) {
+export default function Explore() {
+
+    // Google maps puts me in Virginia, this is only to center the map and does not interact with the contract.
+    const location = { lat :42.3744695, lng :-71.1311465}
 
     const {thor, vendor} = useContext(ConnexContext);
 
