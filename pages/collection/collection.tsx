@@ -62,7 +62,7 @@ export default function Collection() {
             await getCollection();
         }
         initCollection();
-    }, []);
+    }, [getCollection]);
 
     return (<div className="flex flex-col items-center min-h-screen background-patterned grid justify-center">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">

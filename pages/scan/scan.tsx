@@ -129,6 +129,7 @@ export default function Scan() {
             const json = await data.json();
             setLocation(json.location);
         };
+        console.log(location);
         initLocation();
 
     }, [])
