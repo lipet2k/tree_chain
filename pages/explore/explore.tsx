@@ -66,7 +66,7 @@ export default function Explore() {
         }
         initLocation();
         initMarkers();
-    }, [markers]);
+    }, []);
 
     return (
         <div className="flex flex-col items-center min-h-screen background-patterned">
