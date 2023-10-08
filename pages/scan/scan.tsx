@@ -39,6 +39,7 @@ export default function Scan({ location }: { location: { lat: number, lng: numbe
 
     async function mintNFT(url: string) {
         const { publicRuntimeConfig } = getConfig();
+        const backend_url = publicRuntimeConfig.BACKEND_URL;
         const addressContract = publicRuntimeConfig.CONTRACT_ADDRESS;
         const mint_abi = {
             "inputs": [
@@ -77,7 +78,7 @@ export default function Scan({ location }: { location: { lat: number, lng: numbe
             const urlParams = new URLSearchParams({
                 url: url,
             });
-            const data = await fetch("http://localhost:5000/classify?" + urlParams);
+            const data = await fetch(backend_url + urlParams);
             const json = await data.json();
             toast.info(json.result, {
                 position: "top-right",
