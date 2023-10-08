@@ -6,7 +6,7 @@ TreeChain is a project that involves people to get connected with nature. Users 
 
 TreeChain is a fun way to capture metrics around species of plants in the Northeast region. The scannable feature and AI classification allows the collection of metrics for endangered or envasive species. Helping communities combat problematic vegetation and save at risk plants.
 
-TreeChain is an AI powered solution to data collection for vegetation. 
+TreeChain is an AI powered solution to data collection. Users are rewarded in the form of NFTs
 
 4. Include a brief competitive analysis (including why past similar projects failed and how you aim to learn from their failures) and estimate the entire market and addressable market
 5. Include an overview of the tokenomics (e.g. X-to-earn / incentives) 

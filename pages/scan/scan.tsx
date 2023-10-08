@@ -131,7 +131,7 @@ export default function Scan() {
         };
         initLocation();
 
-    }, [finalImageUrl])
+    }, [])
 
     return (
         <div className='flex flex-col items-center min-h-screen background-patterned'>
