@@ -1,7 +1,5 @@
 # TreeChain: Bridging Nature and Technology
 
-Explore the application: [https://treechain.xyz](https://treechain.xyz)
-
 TreeChain is an innovative project that encourages people to connect with nature. Our platform allows users to explore and document various species of plants and vegetation in the Northeast region. By scanning and verifying these species, users earn unique AI-generated NFTs that are added to their collection.
 
 ### The TreeChain Difference
